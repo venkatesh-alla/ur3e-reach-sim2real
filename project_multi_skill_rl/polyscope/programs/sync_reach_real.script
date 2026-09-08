@@ -1,0 +1,145 @@
+def test_thread():
+  global _hidden_verificationVariable=0
+  set_target_payload(0.000000, [0.000000, 0.000000, 0.000000], [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000])
+  tool_wrench_limit_disable()
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  motion_version_set(2)
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_input_actions_to_default()
+  set_gravity([0.0, 0.0, 9.82])
+  set_tool_communication(False, 115200, 0, 1, 1.5, 3.5)
+  set_tool_output_mode(0)
+  set_tool_digital_output_mode(0, 1)
+  set_tool_digital_output_mode(1, 1)
+  set_tool_voltage(0)
+  set_safety_mode_transition_hardness(1)
+  step_count_138500f0_5f31_4f07_9509_e5ef39ac4783 = 0.0
+  thread Step_Counter_Thread_70277f86_54d6_43f5_8e36_b9e5b871ddaa():
+    while (True):
+      step_count_138500f0_5f31_4f07_9509_e5ef39ac4783 = step_count_138500f0_5f31_4f07_9509_e5ef39ac4783 + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_70277f86_54d6_43f5_8e36_b9e5b871ddaa()
+  $ 2 "BeforeStart"
+  $ 3 "setp≔p[0,0,0,0,0,0]"
+  global setp=p[0,0,0,0,0,0]
+  $ 4 "rtde_set_watchdog('input_int_register_0', 0.01, 'PAUSE')"
+  rtde_set_watchdog("input_int_register_0", 0.01, "PAUSE")
+  $ 5 "write_output_integer_register(0, 1)"
+  write_output_integer_register(0, 1)
+  $ 6 "write_output_integer_register(1, 1)"
+  write_output_integer_register(1, 1)
+  $ 7 "write_output_integer_register(2, 12345)"
+  write_output_integer_register(2, 12345)
+  $ 21 "Thread_1"
+  thread Thread_1():
+    while (True):
+      $ 22 "Loop"
+      while (True):
+        $ 23 "tmp≔p[0,0,0,0,0,0]"
+        global tmp=p[0,0,0,0,0,0]
+        $ 24 "tmp[0] = read_input_float_register(0)"
+        tmp[0] = read_input_float_register(0)
+        $ 25 "tmp[1] = read_input_float_register(1)"
+        tmp[1] = read_input_float_register(1)
+        $ 26 "tmp[2] = read_input_float_register(2)"
+        tmp[2] = read_input_float_register(2)
+        $ 27 "tmp[3] = read_input_float_register(3)"
+        tmp[3] = read_input_float_register(3)
+        $ 28 "tmp[4] = read_input_float_register(4)"
+        tmp[4] = read_input_float_register(4)
+        $ 29 "tmp[5] = read_input_float_register(5)"
+        tmp[5] = read_input_float_register(5)
+        $ 30 "setp≔tmp"
+        global setp=tmp
+        $ 31 "sync()"
+        sync()
+      end
+    end
+  end
+  threadId_Thread_1 = run Thread_1()
+  $ 32 "Thread_2"
+  thread Thread_2():
+    while (True):
+      $ 33 "prev_req≔0"
+      global prev_req=0
+      $ 34 "Loop"
+      while (True):
+        $ 35 "req≔read_input_integer_register(1)"
+        global req=read_input_integer_register(1)
+        $ 36 "If req≟1 and prev_req≟0"
+        if (req == 1 and prev_req == 0):
+          $ 37 "tmp2≔p[0,0,0,0,0,0]"
+          global tmp2=p[0,0,0,0,0,0]
+          $ 38 "tmp2[0] = read_input_float_register(6)"
+          tmp2[0] = read_input_float_register(6)
+          $ 39 "tmp2[1] = read_input_float_register(7)"
+          tmp2[1] = read_input_float_register(7)
+          $ 40 "tmp2[2] = read_input_float_register(8)"
+          tmp2[2] = read_input_float_register(8)
+          $ 41 "tmp2[3] = read_input_float_register(9)"
+          tmp2[3] = read_input_float_register(9)
+          $ 42 "tmp2[4] = read_input_float_register(10)"
+          tmp2[4] = read_input_float_register(10)
+          $ 43 "tmp2[5] = read_input_float_register(11)"
+          tmp2[5] = read_input_float_register(11)
+          $ 44 "goalp≔tmp2"
+          global goalp=tmp2
+          $ 45 "If get_inverse_kin_has_solution(goalp)"
+          if (get_inverse_kin_has_solution(goalp)):
+            $ 46 "write_output_integer_register(1, 0)"
+            write_output_integer_register(1, 0)
+          else:
+            $ 47 "Else" "noBreak"
+            $ 48 "write_output_integer_register(1, -1)"
+            write_output_integer_register(1, -1)
+          end
+        end
+        $ 49 "If req≟0 and prev_req≟1"
+        if (req == 0 and prev_req == 1):
+          $ 50 "write_output_integer_register(1, 1)"
+          write_output_integer_register(1, 1)
+        end
+        $ 51 "prev_req≔req"
+        global prev_req=req
+        $ 52 "sync()"
+        sync()
+      end
+    end
+  end
+  threadId_Thread_2 = run Thread_2()
+  while (True):
+    $ 8 "Robot Program"
+    $ 9 "If read_input_integer_register(0)≟1 and setp≠p[0, 0, 0, 0, 0, 0]"
+    if (read_input_integer_register(0) == 1  and  setp != p[0, 0, 0, 0, 0, 0]):
+      $ 10 "'Valid pose received from client'"
+      # 'Valid pose received from client'
+      $ 11 "MoveJ"
+      $ 12 "setp" "breakAfter"
+      movej(setp, a=1.3962634015954636, v=1.0471975511965976)
+      $ 13 "'Confirm that move was executed'"
+      # 'Confirm that move was executed'
+      $ 14 "write_output_integer_register(0, 0)"
+      write_output_integer_register(0, 0)
+      $ 15 "'Wait until script acknowledges confirmation'"
+      # 'Wait until script acknowledges confirmation'
+      $ 16 "Loop read_input_integer_register(0)≟1"
+      while (read_input_integer_register(0) == 1):
+        $ 17 "sync()"
+        sync()
+      end
+      $ 18 "'Request next pose'"
+      # 'Request next pose'
+      $ 19 "write_output_integer_register(0, 1)"
+      write_output_integer_register(0, 1)
+    end
+    $ 20 "sync()"
+    sync()
+  end
+end

@@ -1,0 +1,47 @@
+UR3eReach-v1:                                                     
+  env_wrapper:                                                    
+     - sb3_contrib.common.wrappers.TimeFeatureWrapper:            
+         max_steps: 100                                           
+     #- rl_zoo3.wrappers.ActionNoiseWrapper                       
+  n_timesteps: !!float 2e5                                        
+  learning_starts: 10000                                          
+  policy: 'MultiInputPolicy'                                      
+  ent_coef: 'auto'                                                
+  buffer_size: 1000000                                            
+  batch_size: 4096                                                
+  gamma: 0.98                                                     
+  learning_rate: !!float 0.001                                    
+  tau: 0.005                                                      
+  replay_buffer_class: HerReplayBuffer                            
+  replay_buffer_kwargs: "dict(                                    
+    goal_selection_strategy='future',                             
+    n_sampled_goal=4,                                             
+    copy_info_dict = True,                                        
+  )"                                                              
+  policy_kwargs: "dict(net_arch=[512, 512, 512], n_critics=2)"    
+  normalize: True                                                 
+  n_envs: 12  
+  
+UR3eReachDense-v1:                                                   
+  env_wrapper:                                                       
+     - sb3_contrib.common.wrappers.TimeFeatureWrapper:               
+         max_steps: 100                                              
+     #- rl_zoo3.wrappers.ActionNoiseWrapper                          
+  n_timesteps: !!float 2e5                                           
+  learning_starts: 10000                                             
+  policy: 'MultiInputPolicy'                                         
+  ent_coef: 'auto'                                                   
+  buffer_size: 1000000                                               
+  batch_size: 4096                                                   
+  gamma: 0.98                                                        
+  learning_rate: !!float 0.001                                       
+  tau: 0.005                                                         
+  replay_buffer_class: HerReplayBuffer                               
+  replay_buffer_kwargs: "dict(                                       
+    goal_selection_strategy='future',                                
+    n_sampled_goal=4,                                                
+    copy_info_dict = True,                                           
+  )"                                                                 
+  policy_kwargs: "dict(net_arch=[512, 512, 512], n_critics=2)"       
+  normalize: True                                                    
+  n_envs: 12

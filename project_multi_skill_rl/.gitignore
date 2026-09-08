@@ -1,0 +1,14 @@
+__pychache__
+README.md
+~*
+*~
+*.pyc
+tensorboard_log/
+trained_models/
+screencast/
+models/
+*.pkl
+.DS_Store
+.vscode/
+wandb/
+runs/
